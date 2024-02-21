@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Avatar from "../avatar";
 import { ThumbsUp, Trash } from "phosphor-react";
 
@@ -7,6 +8,12 @@ interface CommentProps {
 }
 
 const Comment = ({ content, handleDeleteComment }: CommentProps) => {
+  const [like, setLike] = useState<number>(0)
+
+  const handleAddLike = () => {
+    setLike(like => like + 1)
+  }
+
   const deleteMyComment = () => {
     handleDeleteComment(content)
   }
@@ -43,10 +50,10 @@ const Comment = ({ content, handleDeleteComment }: CommentProps) => {
         </section>
 
         <footer>
-          <button className="flex items-center justify-center gap-2 text-[#8D8D99]">
+          <button className="flex items-center justify-center gap-2 text-[#8D8D99]" onClick={handleAddLike}>
             <ThumbsUp />
             Aplaudir •
-            <span>1</span>
+            <span>{like}</span>
           </button>
         </footer>
       </div>

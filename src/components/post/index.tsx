@@ -9,7 +9,7 @@ interface PostProps {
 }
 
 const Post = ({ author, content, published }: PostProps) => {
-  const [comments, setComments] = useState(['Belo Projeto Amigo'])
+  const [comments, setComments] = useState<string[]>([])
   const [newComment, setNewComment] = useState('')
 
   const handleNewComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
