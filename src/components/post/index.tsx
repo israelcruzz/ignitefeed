@@ -1,51 +1,72 @@
+import { ChangeEvent, FormEvent, useState } from "react";
 import Avatar from "../avatar";
 import Comment from "../comment";
 
-const Post = () => {
+interface PostProps {
+  author: { avatarUrl: string, name: string, role: string };
+  content: { type: string, content: string }[];
+  published: Date
+}
+
+const Post = ({ author, content, published }: PostProps) => {
+  const [comments, setComments] = useState(['Belo Projeto Amigo'])
+  const [newComment, setNewComment] = useState('')
+
+  const handleNewComment = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setNewComment(event.target.value)
+  }
+  
+  const handleCreateNewComment = (event: FormEvent) => {
+    event.preventDefault()
+
+    setComments([newComment, ...comments])
+    setNewComment('')
+  }
+
+  const handleDeleteComment = (deleteComment: string) => {
+    const newComments = comments.filter(comment => comment !== deleteComment)
+
+    setComments(newComments)
+  }
+
   return (
     <article className="w-[832px] mb-6 bg-[#202024] p-12 rounded-lg">
       <header className="w-full flex justify-between">
-        <div className="flex gap-6 w-[168px]">
+        <div className="flex gap-6 w-[300px]">
           <Avatar
             hasBorder
-            imageUrl="https://avatars.githubusercontent.com/u/128995099?v=4"
+            imageUrl={author.avatarUrl}
           />
 
           <div>
-            <h1 className="text-[#E1E1E6] font-bold text-base">Israel Cruz</h1>
-            <span className="text-[#8D8D99] text-sm">Fullstack</span>
+            <h1 className="text-[#E1E1E6] font-bold text-base">{author.name}</h1>
+            <span className="text-[#8D8D99] text-sm">{author.role}</span>
           </div>
         </div>
 
-        <h1 className="text-[#8D8D99] text-sm">Públicado há 1h</h1>
+        <h1 className="text-[#8D8D99] text-sm">{published.toDateString()}</h1>
       </header>
 
       <div className="mt-6 mb-6 flex flex-col gap-6 text-base text-[#C4C4CC]">
-        <h1>Fala galeraa 👋</h1>
-
-        <span>
-          Acabei de subir mais um projeto no meu portifa. É um projeto que fiz
-          no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀
-        </span>
-
-        <a href="#" className="text-[#00B37E] font-bold">
-          {" "}
-          👉 jane.design/doctorcare
-        </a>
-        <a href="#" className="text-[#00B37E] font-bold">
-          {" "}
-          👉 #novoprojeto #nlw #rocketseat
-        </a>
+        {content.map(line => {
+          if(line.type === 'paragraph'){
+            return <p>{line.content}</p>
+          } else if (line.type === 'link') {
+            return <a href="#" className="text-[#00B37E] font-bold">{line.content}</a>
+          }
+        })}
       </div>
 
       <div className="border border-[#323238]"></div>
 
-      <form className="mt-6 flex flex-col gap-4">
+      <form className="mt-6 flex flex-col gap-4" onSubmit={handleCreateNewComment}>
         <strong className="text-white">Deixe seu feedback</strong>
         <textarea
           name="comment"
           placeholder="Escreva um comentário..."
-          className="bg-[#121214] rounded-lg p-4 h-[96px] text-white"
+          className="bg-[#121214] rounded-lg p-4 h-[96px] text-white outline-none"
+          onChange={handleNewComment}
+          value={newComment}
         />
 
         <footer>
@@ -54,8 +75,9 @@ const Post = () => {
       </form>
 
       <div className="mt-6 flex flex-col gap-6 w-full">
-        <Comment />
-        <Comment />
+        {comments.map(comment => {
+          return <Comment content={comment} handleDeleteComment={handleDeleteComment} />
+        })}
       </div>
     </article>
   );

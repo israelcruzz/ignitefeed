@@ -1,7 +1,16 @@
 import Avatar from "../avatar";
 import { ThumbsUp, Trash } from "phosphor-react";
 
-const Comment = () => {
+interface CommentProps {
+  content: string
+  handleDeleteComment: (deleteComment: string) => void
+}
+
+const Comment = ({ content, handleDeleteComment }: CommentProps) => {
+  const deleteMyComment = () => {
+    handleDeleteComment(content)
+  }
+
   return (
     <div className="w-full flex gap-2">
       <section>
@@ -17,17 +26,19 @@ const Comment = () => {
             <div className="w-full flex justify-between">
               <div>
                 <h1 className="text-[#E1E1E6] font-bold text-sm">
-                  Israel Cruz
+                  Israel Cruz <span className="text-[#8D8D99] font-normal">(você)</span>
                 </h1>
-                <span className="text-xs text-[#8D8D99]">Cerca de 2h</span>
+                <span className="text-xs text-[#8D8D99]">há 1 min</span>
               </div>
 
               <div className="text-[#8D8D99] cursor-pointer">
-                <Trash size={24} />
+                <button onClick={deleteMyComment}>
+                  <Trash size={24} />
+                </button>
               </div>
             </div>
 
-            <h1 className="mt-4 text-[#C4C4CC] font-normal">Incrivel!</h1>
+            <h1 className="mt-4 text-[#C4C4CC] font-normal">{content}</h1>
           </div>
         </section>
 
